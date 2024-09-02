@@ -1,5 +1,6 @@
 const Admin = require("../models/admin.models");
-let jwt = require("jsonwebtoken")
+let jwt = require("jsonwebtoken");
+const sendEmail = require("../services/email.services");
 
 let adminRegister = async (req, res) => {
     try {
@@ -19,6 +20,15 @@ let adminRegister = async (req, res) => {
         }
 
         let admin = await Admin.create(body);
+
+        if (admin) {
+            let res = sendEmail(
+                admin.email,
+                "otp mail",
+                `${Math.floor(Math.random() * 10000)}`
+            )
+        }
+
         res.status(201).json({
             message: "admin register success",
             admin,
